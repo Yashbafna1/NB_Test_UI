@@ -1,0 +1,1981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerPoint Copilot UI Mockup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #e5e5e5;
+            overflow: hidden;
+        }
+
+        /* PowerPoint App Background */
+        .ppt-app {
+            width: 100vw;
+            height: 100vh;
+            background: #f3f2f1;
+            position: relative;
+        }
+
+        .ppt-ribbon {
+            height: 110px;
+            background: #fff;
+            border-bottom: 1px solid #d1d1d1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ppt-tabs {
+            display: flex;
+            gap: 16px;
+            padding: 8px 16px 0;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .ppt-tab {
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #201f1e;
+            cursor: pointer;
+        }
+
+        .ppt-tab.active {
+            border-bottom: 2px solid #d13438;
+            color: #d13438;
+            font-weight: 600;
+        }
+
+        .ppt-content {
+            display: flex;
+            height: calc(100vh - 110px);
+        }
+
+        .ppt-sidebar {
+            width: 220px;
+            background: #faf9f8;
+            border-right: 1px solid #edebe9;
+            padding: 16px 8px;
+        }
+
+        .ppt-slide-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: white;
+            border: 2px solid #d13438;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: #8a8886;
+        }
+
+        .ppt-main {
+            flex: 1;
+            background: #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .ppt-slide {
+            width: 800px;
+            height: 600px;
+            background: white;
+            box-shadow: 0 3.2px 7.2px rgba(0,0,0,.132);
+        }
+
+        /* Copilot Popup Overlay */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay.hidden {
+            display: none;
+        }
+
+        .copilot-popup {
+            background: white;
+            width: 90%;
+            max-width: 900px;
+            height: 90%;
+            max-height: 750px;
+            border-radius: 8px;
+            box-shadow: 0 6.4px 14.4px rgba(0,0,0,.3), 0 1.2px 3.6px rgba(0,0,0,.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #edebe9;
+            background: #ffffff;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .copilot-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b83f0 0%, #a099f5 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            margin-right: 10px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .header-title {
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+            color: #201f1e;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #605e5c;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.1s ease;
+        }
+
+        .close-btn:hover {
+            background: #f3f2f1;
+            color: #201f1e;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 24px 40px;
+            overflow-y: scroll !important;
+            flex: 1;
+            min-height: 0;
+            height: 100%;
+        }
+
+        .content::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #d2d0ce;
+            border-radius: 0;
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #605e5c;
+            border-radius: 7px;
+            border: 2px solid #d2d0ce;
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #323130;
+        }
+
+        .main-heading {
+            font-size: 32px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 32px;
+            color: #201f1e;
+            letter-spacing: -0.02em;
+        }
+
+        /* Input Container */
+        .input-container {
+            background: white;
+            border: 1px solid #d2d0ce;
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 1.6px 3.6px rgba(0,0,0,.06), 0 0.3px 0.9px rgba(0,0,0,.04);
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: #605e5c;
+            margin-bottom: 6px;
+            font-weight: 400;
+        }
+
+        .input-text {
+            font-size: 14px;
+            color: #201f1e;
+            margin-bottom: 10px;
+            border: none;
+            outline: none;
+            width: 100%;
+            resize: none;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 40px;
+            line-height: 1.4;
+        }
+
+        .input-text::placeholder {
+            color: #8a8886;
+        }
+
+        .file-pills-container {
+            margin-bottom: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .file-pill {
+            display: inline-flex;
+            align-items: center;
+            background: #f5f5ff;
+            border: 1px solid #d2d0ce;
+            border-radius: 12px;
+            padding: 4px 10px 4px 8px;
+            font-size: 11px;
+            color: #201f1e;
+        }
+
+        .file-pill-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b83f0 0%, #a099f5 100%);
+            margin-right: 6px;
+            flex-shrink: 0;
+        }
+
+        .file-pill-text {
+            margin-right: 6px;
+        }
+
+        .file-pill-close {
+            color: #605e5c;
+            cursor: pointer;
+            font-size: 10px;
+            padding: 2px;
+        }
+
+        .file-pill-close:hover {
+            color: #201f1e;
+        }
+
+        .input-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #edebe9;
+        }
+
+        .char-counter {
+            font-size: 11px;
+            color: #8a8886;
+        }
+
+        .input-options {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .option-item {
+            font-size: 12px;
+            color: #201f1e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.1s ease;
+            position: relative;
+        }
+
+        .option-item span:last-child {
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.1s ease;
+        }
+
+        .option-item:hover {
+            background: #f3f2f1;
+        }
+
+        .option-item:hover span:last-child {
+            border-bottom-color: #201f1e;
+        }
+
+        .option-icon {
+            font-size: 14px;
+        }
+
+        /* Length dropdown menu */
+        .length-dropdown {
+            display: none;
+            position: absolute;
+            top: 360px;
+            right: 180px;
+            background: white;
+            border: 1px solid #d2d0ce;
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 220px;
+            box-shadow: 0 6.4px 14.4px rgba(0,0,0,.132), 0 1.2px 3.6px rgba(0,0,0,.108);
+            z-index: 1100;
+        }
+
+        .length-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #605e5c;
+            padding: 8px 16px 4px 16px;
+        }
+
+        .dropdown-option {
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .dropdown-option:hover {
+            background: #f3f2f1;
+        }
+
+        .dropdown-option-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
+        .radio-btn {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid #8a8886;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .dropdown-option.selected .radio-btn {
+            border-color: #d13438;
+            border-width: 2px;
+        }
+
+        .dropdown-option.selected .radio-btn::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #d13438;
+            border-radius: 50%;
+        }
+
+        .dropdown-option-title {
+            font-size: 13px;
+            color: #201f1e;
+            font-weight: 500;
+        }
+
+        .dropdown-option-subtitle {
+            font-size: 11px;
+            color: #605e5c;
+            margin-left: 24px;
+        }
+
+        .dropdown-option.selected {
+            background: #faf9f8;
+        }
+
+        /* File Upload UI */
+        .file-upload-overlay {
+            display: none;
+            position: absolute;
+            top: 360px;
+            right: 60px;
+            background: white;
+            border: 1px solid #d2d0ce;
+            border-radius: 8px;
+            padding: 20px;
+            width: 320px;
+            box-shadow: 0 6.4px 14.4px rgba(0,0,0,.132), 0 1.2px 3.6px rgba(0,0,0,.108);
+            z-index: 1100;
+        }
+
+        .file-upload-overlay.active {
+            display: block;
+        }
+
+        .file-upload-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #201f1e;
+            margin-bottom: 12px;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #d2d0ce;
+            border-radius: 6px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-upload-area:hover {
+            border-color: #8a8886;
+            background: #faf9f8;
+        }
+
+        .file-upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .file-upload-text {
+            font-size: 13px;
+            color: #201f1e;
+            margin-bottom: 4px;
+        }
+
+        .file-upload-subtext {
+            font-size: 11px;
+            color: #605e5c;
+        }
+
+        .file-browse-btn {
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: #d13438;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .file-browse-btn:hover {
+            background: #a72923;
+        }
+
+        /* Send Button */
+        .send-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #d13438;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            box-shadow: 0 1.6px 3.6px rgba(209,52,56,.3);
+        }
+
+        .send-button:hover {
+            background: #a72923;
+        }
+
+        .send-button:active {
+            transform: scale(0.96);
+        }
+
+        /* Bottom badge */
+        .bottom-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+            padding: 0 4px;
+        }
+
+        .frontier-badge {
+            border: 1.5px solid #d13438;
+            background: #fdf5f4;
+            color: #d13438;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        /* Screen 2 styles */
+        .prompt-display {
+            background: #faf9f8;
+            border: 1px solid #edebe9;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .prompt-label {
+            font-size: 12px;
+            color: #605e5c;
+            white-space: nowrap;
+        }
+
+        .prompt-value {
+            flex: 1;
+            font-size: 13px;
+            color: #201f1e;
+        }
+
+        .prompt-file-link {
+            color: #c7410a;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .edit-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #605e5c;
+            font-size: 16px;
+        }
+
+        .edit-icon:hover {
+            color: #201f1e;
+        }
+
+        .ai-generated-badge {
+            background: #f3f2f1;
+            color: #605e5c;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: auto;
+        }
+
+        .outline-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #faf9f8;
+            border: 1px solid #edebe9;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .outline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .outline-title-main {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+        }
+
+        .tone-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #605e5c;
+            background: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid #edebe9;
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .tone-badge:hover {
+            background: #f3f2f1;
+        }
+
+        .tone-selector {
+            display: none;
+            position: absolute;
+            top: 48px;
+            right: 16px;
+            background: white;
+            border: 1px solid #d2d0ce;
+            border-radius: 8px;
+            padding: 8px 0;
+            min-width: 240px;
+            box-shadow: 0 6.4px 14.4px rgba(0,0,0,.132), 0 1.2px 3.6px rgba(0,0,0,.108);
+            z-index: 1100;
+        }
+
+        .tone-selector.active {
+            display: block;
+        }
+
+        .tone-selector-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #201f1e;
+            padding: 0 16px 8px 16px;
+            border-bottom: 1px solid #edebe9;
+            margin-bottom: 8px;
+        }
+
+        .tone-option {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background 0.1s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tone-option:hover {
+            background: #f3f2f1;
+        }
+
+        .tone-option.selected {
+            background: #faf9f8;
+        }
+
+        .tone-option .radio-btn {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #8a8886;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tone-option.selected .radio-btn {
+            border-color: #c7410a;
+            border-width: 2px;
+        }
+
+        .tone-option.selected .radio-btn::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #c7410a;
+            border-radius: 50%;
+        }
+
+        .tone-option-text {
+            font-size: 14px;
+            color: #201f1e;
+        }
+
+        .tone-selector-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 12px 16px 0 16px;
+            border-top: 1px solid #edebe9;
+            margin-top: 8px;
+        }
+
+        .tone-btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.1s ease;
+        }
+
+        .tone-btn.cancel {
+            background: transparent;
+            color: #201f1e;
+        }
+
+        .tone-btn.cancel:hover {
+            background: #f3f2f1;
+        }
+
+        .tone-btn.regenerate {
+            background: #e3e3e3;
+            color: #a19f9d;
+            cursor: not-allowed;
+        }
+
+        .tone-btn.regenerate.active {
+            background: #c7410a;
+            color: white;
+            cursor: pointer;
+        }
+
+        .tone-btn.regenerate.active:hover {
+            background: #a33608;
+        }
+
+        .subsection {
+            margin-bottom: 12px;
+        }
+
+        .subsection-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            padding: 6px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .subsection-header:hover {
+            background: #f3f2f1;
+        }
+
+        .drag-handle {
+            color: #8a8886;
+            cursor: grab;
+            font-size: 12px;
+        }
+
+        .subsection-title {
+            flex: 1;
+            font-size: 12px;
+            font-weight: 600;
+            color: #201f1e;
+        }
+
+        .subsection-count {
+            background: #edebe9;
+            color: #605e5c;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .delete-btn {
+            color: #605e5c;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px 6px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .subsection-header:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            color: #d13438;
+        }
+
+        .outline-items {
+            margin-left: 28px;
+        }
+
+        .outline-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #605e5c;
+            padding: 6px;
+            border-radius: 4px;
+        }
+
+        .outline-item:hover {
+            background: #f3f2f1;
+        }
+
+        .outline-icon {
+            color: #8a8886;
+            font-size: 14px;
+        }
+
+        .add-section-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 8px;
+            color: #605e5c;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .add-section-btn:hover {
+            background: #f3f2f1;
+        }
+
+        .add-icon {
+            width: 24px;
+            height: 24px;
+            border: 1px solid #8a8886;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .ai-warning {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #605e5c;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #edebe9;
+        }
+
+        .warning-icon {
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #201f1e;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn.active {
+            background: #fce9e3;
+            border: 1.5px solid #d13438;
+            color: #201f1e;
+        }
+
+        .filter-btn:not(.active) {
+            background: white;
+            border: 1.5px solid #d2d0ce;
+            color: #605e5c;
+        }
+
+        .filter-btn:not(.active):hover {
+            background: #f3f2f1;
+            border-color: #8a8886;
+        }
+
+        .filter-icon {
+            font-size: 16px;
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
+            min-height: 264px;
+            transition: opacity 0.25s ease;
+        }
+
+        .templates-grid.hidden {
+            display: none;
+        }
+
+        .template-card {
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            border: 2px solid transparent;
+        }
+
+        .template-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,.15);
+        }
+
+        .template-card.selected {
+            border: 2px solid #d13438;
+            box-shadow: 0 3.2px 7.2px rgba(209,52,56,.3);
+        }
+
+        .template-thumb {
+            width: 100%;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .template-card.suggested .template-thumb {
+            background: linear-gradient(135deg, #fce9e3 0%, #f9d5cb 100%);
+        }
+
+        .template-card:not(.suggested) .template-thumb {
+            background: #f5f5f5;
+            border: 1px solid #edebe9;
+        }
+
+        .template-thumb-icon {
+            font-size: 36px;
+        }
+
+        .template-name {
+            text-align: center;
+            padding: 8px 4px;
+            font-size: 11px;
+            background: white;
+        }
+
+        .template-card.suggested .template-name {
+            color: #d13438;
+            font-weight: 600;
+        }
+
+        .template-card:not(.suggested) .template-name {
+            color: #201f1e;
+        }
+
+        .folder-card {
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            border: 2px solid transparent;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,.15);
+        }
+
+        .folder-icon {
+            font-size: 48px;
+        }
+
+        .folder-name {
+            font-size: 13px;
+            color: #201f1e;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .folder-count {
+            font-size: 12px;
+            color: #605e5c;
+        }
+
+        .image-preferences {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .image-preferences.hidden {
+            visibility: hidden;
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .image-pref-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #201f1e;
+        }
+
+        .image-source-label {
+            font-size: 12px;
+            color: #201f1e;
+            margin-bottom: 8px;
+        }
+
+        .dropdown-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d2d0ce;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #201f1e;
+            background: white;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .image-styles-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .image-style-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .image-style-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .image-style-thumb {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .image-style-card.selected .image-style-thumb {
+            border-color: #d13438;
+        }
+
+        .image-style-name {
+            font-size: 10px;
+            color: #201f1e;
+            text-align: center;
+        }
+
+        .image-style-card.selected .image-style-name {
+            color: #d13438;
+            font-weight: 600;
+        }
+
+        .show-all {
+            text-align: center;
+            color: #d13438;
+            font-size: 12px;
+            cursor: pointer;
+            margin: 8px 0 16px 0;
+            padding: 6px;
+            border-radius: 4px;
+            transition: background 0.1s ease, opacity 0.25s ease, height 0.25s ease;
+        }
+
+        .show-all.hidden {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .show-all:hover {
+            background: #faf9f8;
+        }
+
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #edebe9;
+        }
+
+        .slide-estimate {
+            font-size: 12px;
+            color: #605e5c;
+        }
+
+        .generate-btn {
+            background: #d13438;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+            box-shadow: 0 1.6px 3.6px rgba(209,52,56,.3);
+        }
+
+        .generate-btn:hover {
+            background: #a72923;
+        }
+
+        .generate-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <!-- PowerPoint App Background -->
+    <div class="ppt-app">
+        <!-- Ribbon -->
+        <div class="ppt-ribbon">
+            <div class="ppt-tabs">
+                <div class="ppt-tab">File</div>
+                <div class="ppt-tab active">Home</div>
+                <div class="ppt-tab">Insert</div>
+                <div class="ppt-tab">Draw</div>
+                <div class="ppt-tab">Design</div>
+                <div class="ppt-tab">Transitions</div>
+                <div class="ppt-tab">Animations</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="ppt-content">
+            <div class="ppt-sidebar">
+                <div class="ppt-slide-thumbnail">Slide 1</div>
+            </div>
+            <div class="ppt-main">
+                <div class="ppt-slide"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copilot Popup Overlay -->
+    <div class="overlay" id="copilotOverlay">
+        <div class="copilot-popup">
+            <!-- Screen 1: Input Screen -->
+            <div id="screen1">
+                <div class="header">
+                    <div class="copilot-icon">✨</div>
+                    <div class="header-title">Create a presentation with Copilot</div>
+                    <div class="close-btn" onclick="closePopup()">✕</div>
+                </div>
+                
+                <div class="content">
+                    <h1 class="main-heading">Hi, how can I help?</h1>
+                    
+                    <div class="input-container">
+                        <div class="input-label">Create a presentation about</div>
+                        <textarea class="input-text" id="promptInput" placeholder="/" oninput="updateCharCount()">Impact of US exports tariffs on India</textarea>
+                        <div class="file-pills-container" id="filePillsContainer">
+                            <div class="file-pill" data-filename="Copilot Stories scrum 2025-11-03.loop">
+                                <div class="file-pill-icon"></div>
+                                <span class="file-pill-text">Copilot Stories scrum 2025-11-03.loop</span>
+                                <span class="file-pill-close" onclick="removeFilePill('Copilot Stories scrum 2025-11-03.loop')" title="Remove">✕</span>
+                            </div>
+                        </div>
+                        
+                        <div class="input-footer">
+                            <div class="char-counter" id="charCounter">43 / 2000</div>
+                            <div class="input-options">
+                                <div class="option-item" onclick="toggleLengthDropdown(event)">
+                                    <span class="option-icon">📄</span>
+                                    <span>Length: Suggested</span>
+                                </div>
+                                <div class="option-item" onclick="toggleFileUpload(event)">
+                                    <span class="option-icon">📎</span>
+                                    <span>Reference files</span>
+                                </div>
+                                <button class="send-button" onclick="showScreen2()">
+                                    <span style="font-size: 14px;">➔</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Length dropdown menu -->
+                    <div class="length-dropdown" id="lengthDropdown">
+                        <div class="dropdown-section-title">Presentation length</div>
+                        <div class="dropdown-option selected" onclick="selectLength(this, 'Suggested')">
+                            <div class="dropdown-option-header">
+                                <div class="radio-btn"></div>
+                                <div class="dropdown-option-title">Suggested</div>
+                            </div>
+                            <div class="dropdown-option-subtitle">Suggested by Copilot</div>
+                        </div>
+                        <div class="dropdown-option" onclick="selectLength(this, 'Short')">
+                            <div class="dropdown-option-header">
+                                <div class="radio-btn"></div>
+                                <div class="dropdown-option-title">Short</div>
+                            </div>
+                            <div class="dropdown-option-subtitle">3-8 slides</div>
+                        </div>
+                        <div class="dropdown-option" onclick="selectLength(this, 'Medium')">
+                            <div class="dropdown-option-header">
+                                <div class="radio-btn"></div>
+                                <div class="dropdown-option-title">Medium</div>
+                            </div>
+                            <div class="dropdown-option-subtitle">9-17 slides</div>
+                        </div>
+                        <div class="dropdown-option" onclick="selectLength(this, 'Long')">
+                            <div class="dropdown-option-header">
+                                <div class="radio-btn"></div>
+                                <div class="dropdown-option-title">Long</div>
+                            </div>
+                            <div class="dropdown-option-subtitle">18+ slides</div>
+                        </div>
+                    </div>
+
+                    <!-- File Upload UI -->
+                    <div class="file-upload-overlay" id="fileUpload">
+                        <div class="file-upload-title">Reference files</div>
+                        <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">Drag and drop files here</div>
+                            <div class="file-upload-subtext">or</div>
+                            <button class="file-browse-btn" onclick="event.stopPropagation(); document.getElementById('fileInput').click()">Browse files</button>
+                        </div>
+                        <input type="file" id="fileInput" style="display: none;" multiple>
+                    </div>
+                    
+                    <div class="bottom-row">
+                        <div class="frontier-badge">Frontier</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Results Screen -->
+            <div id="screen2" style="display: none; height: 100%; flex-direction: column;">
+                <div class="header">
+                    <div class="copilot-icon">✨</div>
+                    <div class="header-title">Create a presentation with Copilot <span class="ai-generated-badge">AI generated</span></div>
+                    <div class="close-btn" onclick="closePopup()">✕</div>
+                </div>
+                
+                <div class="content">
+                    <!-- Editable prompt display -->
+                    <div class="prompt-display">
+                        <span class="prompt-label">Create a presentation about</span>
+                        <span class="prompt-value">Impact of US exports tariffs on India <span class="prompt-file-link">Copilot Stories scrum 2025-11-03.loop</span></span>
+                        <span class="edit-icon" title="Edit">✏️</span>
+                    </div>
+
+                    <!-- Outline Section -->
+                    <div class="outline-section">
+                        <div class="outline-header">
+                            <div class="outline-title-main">Outline</div>
+                            <div class="tone-badge" onclick="toggleToneSelector(event)">
+                                <span>🎵</span>
+                                <span id="toneLabel">Tone: Professional</span>
+                            </div>
+                        </div>
+
+                        <!-- Tone Selector Dropdown -->
+                        <div class="tone-selector" id="toneSelector">
+                            <div class="tone-selector-title">Presentation tone</div>
+                            <div class="tone-option" onclick="selectTone(this, 'Suggested')">
+                                <div class="radio-btn"></div>
+                                <div class="tone-option-text">Suggested</div>
+                            </div>
+                            <div class="tone-option" onclick="selectTone(this, 'Conversational')">
+                                <div class="radio-btn"></div>
+                                <div class="tone-option-text">Conversational</div>
+                            </div>
+                            <div class="tone-option selected" onclick="selectTone(this, 'Professional')">
+                                <div class="radio-btn"></div>
+                                <div class="tone-option-text">Professional</div>
+                            </div>
+                            <div class="tone-option" onclick="selectTone(this, 'Persuasive')">
+                                <div class="radio-btn"></div>
+                                <div class="tone-option-text">Persuasive</div>
+                            </div>
+                            <div class="tone-option" onclick="selectTone(this, 'Uplifting')">
+                                <div class="radio-btn"></div>
+                                <div class="tone-option-text">Uplifting</div>
+                            </div>
+                            <div class="tone-selector-footer">
+                                <button class="tone-btn regenerate" id="regenerateBtn" onclick="regenerateTone()">Regenerate</button>
+                                <button class="tone-btn cancel" onclick="closeToneSelector()">Cancel</button>
+                            </div>
+                        </div>
+
+                        <div class="subsection-title" style="margin-bottom: 12px; font-size: 13px; font-weight: 600; color: #201f1e;">Key Points from the Document</div>
+
+                        <!-- Subsection 1 -->
+                        <div class="subsection">
+                            <div class="subsection-header">
+                                <span class="drag-handle">⋮⋮</span>
+                                <span class="subsection-title">Summary of Decisions and Open Questions</span>
+                                <span class="subsection-count">1</span>
+                                <span class="delete-btn">🗑️</span>
+                            </div>
+                            <div class="outline-items">
+                                <div class="outline-item">
+                                    <span class="outline-icon">📄</span>
+                                    <span>Major Team Decisions and Pending Issues</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subsection 2 -->
+                        <div class="subsection">
+                            <div class="subsection-header">
+                                <span class="drag-handle">⋮⋮</span>
+                                <span class="subsection-title">Project Updates and Bug Investigations</span>
+                                <span class="subsection-count">1</span>
+                                <span class="delete-btn">🗑️</span>
+                            </div>
+                            <div class="outline-items">
+                                <div class="outline-item">
+                                    <span class="outline-icon">📄</span>
+                                    <span>Recent Project Progress and Unresolved Bugs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Subsection 3 -->
+                        <div class="subsection">
+                            <div class="subsection-header">
+                                <span class="drag-handle">⋮⋮</span>
+                                <span class="subsection-title">Project Dependencies and Follow-up Tasks</span>
+                                <span class="subsection-count">1</span>
+                                <span class="delete-btn">🗑️</span>
+                            </div>
+                            <div class="outline-items">
+                                <div class="outline-item">
+                                    <span class="outline-icon">📄</span>
+                                    <span>Dependencies and Action Items for the Team</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Add section button -->
+                        <div class="add-section-btn">
+                            <span class="add-icon">+</span>
+                        </div>
+
+                        <!-- AI Warning -->
+                        <div class="ai-warning">
+                            <span class="warning-icon">⚠️</span>
+                            <span>AI-generated content maybe incorrect</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Presentation style section -->
+                    <div class="section-title">Presentation style</div>
+                    
+                    <div class="filter-buttons">
+                        <div class="filter-btn active" onclick="selectFilter(this, 'all')">
+                            <span class="filter-icon">📌</span>
+                            <span>All</span>
+                        </div>
+                        <div class="filter-btn" onclick="selectFilter(this, 'standard')">
+                            <span class="filter-icon">📄</span>
+                            <span>Standard</span>
+                        </div>
+                        <div class="filter-btn" onclick="selectFilter(this, 'creative')">
+                            <span class="filter-icon">🎨</span>
+                            <span>Creative</span>
+                        </div>
+                        <div class="filter-btn" onclick="selectFilter(this, 'brand')">
+                            <span class="filter-icon">🏢</span>
+                            <span>Brand</span>
+                        </div>
+                    </div>
+                    
+                    <div class="templates-grid" id="allTemplates">
+                        <div class="template-card suggested selected" onclick="selectTemplate(this)">
+                            <div class="template-thumb">
+                                <span class="template-thumb-icon">🖌️</span>
+                            </div>
+                            <div class="template-name">Suggested</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #ff6f3c 0%, #ff9068 100%);">
+                                <span style="position: absolute; color: #d13438; font-size: 18px; font-weight: 600;">PRESENTATION<br>TITLE</span>
+                            </div>
+                            <div class="template-name">Orange Experience</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #d49a6a 0%, #c8865a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">Contoso Marketing</span>
+                            </div>
+                            <div class="template-name">Contoso Marketing</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">Shoji</span>
+                            </div>
+                            <div class="template-name">Shoji</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%);">
+                                <span style="position: absolute; color: white; font-size: 11px;">Contoso Campaigns</span>
+                            </div>
+                            <div class="template-name">Contoso Campaigns</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                                <span style="position: absolute; color: white; font-size: 14px; font-weight: 600;">TITLE</span>
+                            </div>
+                            <div class="template-name">New Century</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);">
+                                <span style="position: absolute; color: #666; font-size: 14px; font-weight: 600;">Title</span>
+                            </div>
+                            <div class="template-name">Quick Study</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">PRESENTATION<br>TITLE</span>
+                            </div>
+                            <div class="template-name">Editorial</div>
+                        </div>
+                    </div>
+
+                    <!-- Standard Templates -->
+                    <div class="templates-grid hidden" id="standardTemplates">
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);">
+                                <span style="position: absolute; color: #4169e1; font-size: 14px; font-weight: 600;">PRESENTATION TITLE</span>
+                            </div>
+                            <div class="template-name">Pitch black</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #fff8e1 0%, #ffe0b2 100%);">
+                                <span style="position: absolute; color: #666; font-size: 14px; font-weight: 600;">Presentation Title</span>
+                            </div>
+                            <div class="template-name">Quick study</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #2e5f3e 0%, #5a8a6a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">Presentation Title</span>
+                            </div>
+                            <div class="template-name">Square harmony</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #d49a6a 0%, #aa7c59 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">PRESENTATION TITLE</span>
+                            </div>
+                            <div class="template-name">New century modern</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #e91e63 0%, #9c27b0 100%);">
+                                <span style="position: absolute; color: white; font-size: 14px; font-weight: 600;">PRESENTATION TITLE</span>
+                            </div>
+                            <div class="template-name">Stock overprint</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #546e7a 0%, #37474f 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">PRESENTATION TITLE</span>
+                            </div>
+                            <div class="template-name">Modern serenity</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #ff6f3c 0%, #ff9068 100%);">
+                                <span style="position: absolute; color: white; font-size: 14px; font-weight: 600;">PRESENTATION TITLE</span>
+                            </div>
+                            <div class="template-name">Orange experience</div>
+                        </div>
+                    </div>
+
+                    <!-- Creative Templates - Only Suggested -->
+                    <div class="templates-grid hidden" id="creativeTemplates">
+                        <div class="template-card suggested" onclick="selectTemplate(this)">
+                            <div class="template-thumb">
+                                <span class="template-thumb-icon">🖌️</span>
+                            </div>
+                            <div class="template-name">Suggested</div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Templates (placeholder - same as All for now) -->
+                    <div class="templates-grid hidden" id="brandTemplates">
+                        <div class="folder-card" onclick="openFolder('microsoft-company')">
+                            <div class="folder-icon">📁</div>
+                            <div class="folder-name">Microsoft company te...</div>
+                            <div class="folder-count">7 template(s)</div>
+                        </div>
+                        <div class="folder-card" onclick="openFolder('microsoft-product')">
+                            <div class="folder-icon">📁</div>
+                            <div class="folder-name">Microsoft product tem...</div>
+                            <div class="folder-count">19 template(s)</div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Templates - Microsoft Company Folder -->
+                    <div class="templates-grid hidden" id="microsoftCompanyTemplates">
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #d49a6a 0%, #c8865a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">Contoso Marketing</span>
+                            </div>
+                            <div class="template-name">Contoso Marketing</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8a 100%);">
+                                <span style="position: absolute; color: white; font-size: 11px;">Contoso Campaigns</span>
+                            </div>
+                            <div class="template-name">Contoso Campaigns</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">Shoji</span>
+                            </div>
+                            <div class="template-name">Shoji</div>
+                        </div>
+                    </div>
+
+                    <!-- Brand Templates - Microsoft Product Folder -->
+                    <div class="templates-grid hidden" id="microsoftProductTemplates">
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #ff6f3c 0%, #ff9068 100%);">
+                                <span style="position: absolute; color: white; font-size: 14px; font-weight: 600;">PRESENTATION TITLE</span>
+                            </div>
+                            <div class="template-name">Orange experience</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
+                                <span style="position: absolute; color: white; font-size: 14px; font-weight: 600;">TITLE</span>
+                            </div>
+                            <div class="template-name">New Century</div>
+                        </div>
+                        <div class="template-card" onclick="selectTemplate(this)">
+                            <div class="template-thumb" style="background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);">
+                                <span style="position: absolute; color: white; font-size: 12px;">PRESENTATION<br>TITLE</span>
+                            </div>
+                            <div class="template-name">Editorial</div>
+                        </div>
+                    </div>
+                    
+                    <div class="show-all" id="showAllBtn">Show all  ▼</div>
+
+                    <!-- Image preferences section -->
+                    <div class="image-preferences" id="imagePreferences">
+                        <div class="image-pref-title">Image preferences</div>
+                        <div class="image-source-label">Source</div>
+                        <select class="dropdown-select">
+                            <option>AI-generated images</option>
+                            <option>Stock images</option>
+                            <option>No images</option>
+                        </select>
+
+                        <div class="image-styles-grid">
+                            <div class="image-style-card selected">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #fce9e3 0%, #f9d5cb 100%);">
+                                    <span>🖌️</span>
+                                </div>
+                                <div class="image-style-name">Suggested</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: #e0e0e0;">
+                                    <span>🦁</span>
+                                </div>
+                                <div class="image-style-name">Low Poly</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);">
+                                    <span>🎨</span>
+                                </div>
+                                <div class="image-style-name">Whimsical 3D</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #feca57 0%, #ff9ff3 100%);">
+                                    <span>🌻</span>
+                                </div>
+                                <div class="image-style-name">Retroprint</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                    <span>👥</span>
+                                </div>
+                                <div class="image-style-name">Flat Design</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #cfd9df 0%, #e2ebf0 100%);">
+                                    <span>📦</span>
+                                </div>
+                                <div class="image-style-name">Isometric 3D</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #a8b68a 0%, #c4d3a8 100%);">
+                                    <span>🦒</span>
+                                </div>
+                                <div class="image-style-name">Photorealistic</div>
+                            </div>
+                            <div class="image-style-card">
+                                <div class="image-style-thumb" style="background: linear-gradient(135deg, #d7d2cc 0%, #e8e4df 100%);">
+                                    <span>🏛️</span>
+                                </div>
+                                <div class="image-style-name">Architectural...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="footer-section">
+                        <div class="slide-estimate">Estimated number of slides: 12 (Maximum 40)</div>
+                        <button class="generate-btn">
+                            <span>📊</span>
+                            <span>Generate slides</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize character counter on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            updateCharCount();
+        });
+
+        function closePopup() {
+            document.getElementById('copilotOverlay').classList.add('hidden');
+        }
+
+        function showScreen2() {
+            const screen1 = document.getElementById('screen1');
+            const screen2 = document.getElementById('screen2');
+            screen1.style.display = 'none';
+                screen2.style.display = 'flex';
+            // Hide dropdowns
+            document.getElementById('lengthDropdown').classList.remove('active');
+            document.getElementById('fileUpload').classList.remove('active');
+        }
+
+        function toggleLengthDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('lengthDropdown');
+            const fileUpload = document.getElementById('fileUpload');
+            fileUpload.classList.remove('active');
+            dropdown.classList.toggle('active');
+        }
+
+        function toggleFileUpload(event) {
+            event.stopPropagation();
+            const fileUpload = document.getElementById('fileUpload');
+            const dropdown = document.getElementById('lengthDropdown');
+            dropdown.classList.remove('active');
+            fileUpload.classList.toggle('active');
+        }
+
+        function selectLength(element, lengthType) {
+            // Remove selected class from all options
+            document.querySelectorAll('.dropdown-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Update button text
+            const lengthButton = document.querySelector('.option-item');
+            lengthButton.querySelector('span:last-child').textContent = 'Length: ' + lengthType;
+            
+            // Close dropdown
+            document.getElementById('lengthDropdown').classList.remove('active');
+        }
+
+        function selectFilter(element, filterType) {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Add active class to clicked button
+            element.classList.add('active');
+            
+            // Fade out current grid
+            const currentGrid = document.querySelector('.templates-grid:not(.hidden)');
+            if (currentGrid) {
+                currentGrid.style.opacity = '0';
+                setTimeout(() => {
+                    // Hide all template grids
+                    document.querySelectorAll('.templates-grid').forEach(grid => {
+                        grid.classList.add('hidden');
+                        grid.style.opacity = '1';
+                    });
+                    
+                    // Show the selected template grid
+                    const gridMap = {
+                        'all': 'allTemplates',
+                        'standard': 'standardTemplates',
+                        'creative': 'creativeTemplates',
+                        'brand': 'brandTemplates'
+                    };
+                    
+                    const gridId = gridMap[filterType];
+                    if (gridId) {
+                        const newGrid = document.getElementById(gridId);
+                        newGrid.classList.remove('hidden');
+                        // Trigger reflow for smooth fade-in
+                        newGrid.offsetHeight;
+                    }
+                    
+                    // Handle Show all button
+                    const showAllBtn = document.getElementById('showAllBtn');
+                    if (filterType === 'creative') {
+                        showAllBtn.classList.add('hidden');
+                    } else {
+                        showAllBtn.classList.remove('hidden');
+                    }
+                    
+                    // Hide 'Show all' button if there's only 1 row or less of templates
+                    if (gridId) {
+                        const grid = document.getElementById(gridId);
+                        const templateCount = grid.querySelectorAll('.template-card, .folder-card').length;
+                        // Hide if 4 or fewer items (1 row in 4-column grid)
+                        if (templateCount <= 4) {
+                            showAllBtn.classList.add('hidden');
+                        }
+                    }
+                    
+                    // Hide Image Preferences when Creative filter is selected
+                    const imagePreferences = document.getElementById('imagePreferences');
+                    if (filterType === 'creative') {
+                        imagePreferences.classList.add('hidden');
+                    } else {
+                        imagePreferences.classList.remove('hidden');
+                    }
+                }, 150);
+            } else {
+                // Initial load - no transition needed
+                document.querySelectorAll('.templates-grid').forEach(grid => {
+                    grid.classList.add('hidden');
+                });
+                
+                const gridMap = {
+                    'all': 'allTemplates',
+                    'standard': 'standardTemplates',
+                    'creative': 'creativeTemplates',
+                    'brand': 'brandTemplates'
+                };
+                
+                const gridId = gridMap[filterType];
+                if (gridId) {
+                    document.getElementById(gridId).classList.remove('hidden');
+                }
+                
+                const showAllBtn = document.getElementById('showAllBtn');
+                if (filterType === 'creative') {
+                    showAllBtn.classList.add('hidden');
+                } else {
+                    showAllBtn.classList.remove('hidden');
+                }
+                
+                if (gridId) {
+                    const grid = document.getElementById(gridId);
+                    const templateCount = grid.querySelectorAll('.template-card, .folder-card').length;
+                    if (templateCount <= 4) {
+                        showAllBtn.classList.add('hidden');
+                    }
+                }
+                
+                const imagePreferences = document.getElementById('imagePreferences');
+                if (filterType === 'creative') {
+                    imagePreferences.classList.add('hidden');
+                } else {
+                    imagePreferences.classList.remove('hidden');
+                }
+            }
+        }
+
+        function openFolder(folderType) {
+            // Hide the brand folders grid
+            document.getElementById('brandTemplates').classList.add('hidden');
+            
+            // Show the appropriate folder templates
+            const folderMap = {
+                'microsoft-company': 'microsoftCompanyTemplates',
+                'microsoft-product': 'microsoftProductTemplates'
+            };
+            
+            const folderId = folderMap[folderType];
+            if (folderId) {
+                document.getElementById(folderId).classList.remove('hidden');
+            }
+        }
+
+        function selectTemplate(element) {
+            // Remove selected class from all template cards in the current visible grid
+            const visibleGrid = document.querySelector('.templates-grid:not(.hidden)');
+            if (visibleGrid) {
+                visibleGrid.querySelectorAll('.template-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+            }
+            
+            // Add selected class to clicked template
+            element.classList.add('selected');
+        }
+
+        let originalTone = 'Professional'; // Track the original tone
+
+        function toggleToneSelector(event) {
+            event.stopPropagation();
+            const selector = document.getElementById('toneSelector');
+            const isOpening = !selector.classList.contains('active');
+            
+            if (isOpening) {
+                // Store the current tone when opening
+                originalTone = document.getElementById('toneLabel').textContent.replace('Tone: ', '');
+            }
+            
+            selector.classList.toggle('active');
+        }
+
+        function selectTone(element, toneName) {
+            // Remove selected class from all options
+            document.querySelectorAll('.tone-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Enable Regenerate button if tone is different from original
+            const regenerateBtn = document.getElementById('regenerateBtn');
+            if (toneName !== originalTone) {
+                regenerateBtn.classList.add('active');
+            } else {
+                regenerateBtn.classList.remove('active');
+            }
+        }
+
+        function regenerateTone() {
+            const regenerateBtn = document.getElementById('regenerateBtn');
+            if (regenerateBtn.classList.contains('active')) {
+                // Get the currently selected tone
+                const selectedOption = document.querySelector('.tone-option.selected');
+                if (selectedOption) {
+                    const toneName = selectedOption.querySelector('.tone-option-text').textContent;
+                    // Update the tone label
+                    document.getElementById('toneLabel').textContent = 'Tone: ' + toneName;
+                    // Update the original tone to the new selection
+                    originalTone = toneName;
+                    // Disable the regenerate button
+                    regenerateBtn.classList.remove('active');
+                    // Close the selector
+                    closeToneSelector();
+                }
+            }
+        }
+
+        function closeToneSelector() {
+            document.getElementById('toneSelector').classList.remove('active');
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('lengthDropdown');
+            const fileUpload = document.getElementById('fileUpload');
+            const toneSelector = document.getElementById('toneSelector');
+            
+            if (!event.target.closest('.option-item') && 
+                !event.target.closest('.length-dropdown') && 
+                !event.target.closest('.file-upload-overlay')) {
+                dropdown.classList.remove('active');
+                fileUpload.classList.remove('active');
+            }
+            
+            if (!event.target.closest('.tone-badge') && 
+                !event.target.closest('.tone-selector')) {
+                if (toneSelector) {
+                    toneSelector.classList.remove('active');
+                }
+            }
+        });
+
+        // Update character counter
+        function updateCharCount() {
+            const input = document.getElementById('promptInput');
+            const counter = document.getElementById('charCounter');
+            const length = input.value.length;
+            counter.textContent = length + ' / 2000';
+        }
+
+        // Remove file pill
+        function removeFilePill(fileName) {
+            const pill = document.querySelector(`[data-filename="${fileName}"]`);
+            if (pill) {
+                pill.remove();
+            }
+        }
+
+        // Add file pill to UI
+        function addFilePill(fileName) {
+            const container = document.getElementById('filePillsContainer');
+            const pill = document.createElement('div');
+            pill.className = 'file-pill';
+            pill.setAttribute('data-filename', fileName);
+            
+            const displayName = fileName.length > 20 ? fileName.substring(0, 17) + '...' : fileName;
+            
+            pill.innerHTML = `
+                <div class="file-pill-icon"></div>
+                <span class="file-pill-text">${displayName}</span>
+                <span class="file-pill-close" onclick="removeFilePill('${fileName}')" title="Remove">✕</span>
+            `;
+            
+            container.appendChild(pill);
+        }
+
+        // Handle file selection
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const files = e.target.files;
+            if (files.length > 0) {
+                Array.from(files).forEach(file => {
+                    addFilePill(file.name);
+                });
+                document.getElementById('fileUpload').classList.remove('active');
+                // Reset file input to allow selecting the same file again
+                e.target.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
